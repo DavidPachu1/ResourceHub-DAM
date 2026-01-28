@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   # Servicio de Base de Datos
-  # docker compose up -d  para inicir el docker con Mysql
+  # docker compose up -d  para iniciar el docker con Mysql
   mysqldb:
     image: mysql:8.0
     container_name: resourcehub-mysql
