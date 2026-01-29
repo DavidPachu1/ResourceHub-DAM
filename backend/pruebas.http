@@ -23,3 +23,27 @@ Content-Type: application/json
 
 ### 4. BORRAR UN USUARIO (DELETE)
 DELETE http://localhost:8080/api/usuarios/2
+
+### ---------------- RECURSOS ----------------
+
+### 1. Crear un Recurso (Proyector)
+POST http://localhost:8080/api/recursos
+Content-Type: application/json
+
+{
+  "nombre": "Proyector Epson Sala 1",
+  "descripcion": "Proyector 4K HDMI",
+  "descripcionAccesible": "Proyector color blanco situado en el techo",
+  "codigoQr": "PROY-001",
+  "tipo": "EQUIPO_INFORMATICO",
+  "estado": "DISPONIBLE"
+}
+
+### 2. Listar Recursos (Debería salir el proyector)
+GET http://localhost:8080/api/recursos
+
+### 3. Borrar el Recurso (Lógicamente)
+DELETE http://localhost:8080/api/recursos/1
+
+### 4. Listar de nuevo (¡Debería salir VACÍA la lista aunque el dato sigue en la BD!)
+GET http://localhost:8080/api/recursos
