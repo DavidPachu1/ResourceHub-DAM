@@ -1,0 +1,25 @@
+### 1. VER TODOS LOS USUARIOS (GET)
+GET http://localhost:8080/api/usuarios
+
+### 2. CREAR UN USUARIO NUEVO (POST)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "nombre": "Piloto Nuevo",
+  "email": "piloto@test.com",
+  "password": "123"
+}
+
+### 3. ACTUALIZAR UN USUARIO (PUT)
+# Nota: Probamos con el ID 2 porque el 1 es el del DataSeeder
+PUT http://localhost:8080/api/usuarios/2
+Content-Type: application/json
+
+{
+  "nombre": "Piloto Actualizado",
+  "email": "piloto@test.com"
+}
+
+### 4. BORRAR UN USUARIO (DELETE)
+DELETE http://localhost:8080/api/usuarios/2
