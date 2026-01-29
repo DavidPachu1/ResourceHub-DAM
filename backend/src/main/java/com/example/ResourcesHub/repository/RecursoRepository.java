@@ -1,4 +1,4 @@
-package com.example.ResourcesHub.repositoy;
+package com.example.ResourcesHub.repository;
 
 import com.example.ResourcesHub.model.Recurso;
 import org.springframework.data.jpa.repository.JpaRepository;

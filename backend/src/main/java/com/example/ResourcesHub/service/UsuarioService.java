@@ -1,13 +1,9 @@
 package com.example.ResourcesHub.service;
 
 import com.example.ResourcesHub.model.Usuario;
-import com.example.ResourcesHub.repositoy.UsuarioRepository;
+import com.example.ResourcesHub.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 

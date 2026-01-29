@@ -1,3 +1,4 @@
+### ---------------- USUARIOS ----------------
 ### 1. VER TODOS LOS USUARIOS (GET)
 GET http://localhost:8080/api/usuarios
 
@@ -47,3 +48,24 @@ DELETE http://localhost:8080/api/recursos/1
 
 ### 4. Listar de nuevo (¡Debería salir VACÍA la lista aunque el dato sigue en la BD!)
 GET http://localhost:8080/api/recursos
+
+### ---------------- RESERVAS ----------------
+
+### 1. Crear una Reserva
+# Asumimos: Usuario ID 1 (Tester) y Recurso ID 1 (El que creaste ayer, si lo borraste crea uno nuevo antes)
+POST http://localhost:8080/api/reservas
+Content-Type: application/json
+
+{
+  "fechaInicio": "2026-02-01T10:00:00",
+  "fechaFin": "2026-02-01T12:00:00",
+  "usuario": {
+    "id": 1
+  },
+  "recurso": {
+    "id": 1
+  }
+}
+
+### 2. Ver Reservas
+GET http://localhost:8080/api/reservas

@@ -1,7 +1,7 @@
 package com.example.ResourcesHub.runner;
 
 import com.example.ResourcesHub.model.Usuario;
-import com.example.ResourcesHub.repositoy.UsuarioRepository;
+import com.example.ResourcesHub.repository.UsuarioRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
 package com.example.ResourcesHub.service;
 
 import com.example.ResourcesHub.model.Recurso;
-import com.example.ResourcesHub.repositoy.RecursoRepository;
+import com.example.ResourcesHub.repository.RecursoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
