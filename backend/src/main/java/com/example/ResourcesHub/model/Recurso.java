@@ -43,7 +43,7 @@ public class Recurso {
     // --- ENUMS (Orden y Control) ---
 
     @Enumerated(EnumType.STRING) // Guarda el texto "AULA" en la BD, no un número raro
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private TipoRecurso tipo;
 
     @Enumerated(EnumType.STRING)

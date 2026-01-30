@@ -27,10 +27,16 @@ public class ReservaService {
         if (reserva.getFechaFin().isBefore(reserva.getFechaInicio())) {
             throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la de inicio");
         }
+
+        List<Reserva> conflictos = reservaRepository.findReservasEnConflicto(
+                reserva.getRecurso().getId(),
+                reserva.getFechaInicio(),
+                reserva.getFechaFin()
+        );
+        if (!conflictos.isEmpty()) {
+            throw new IllegalStateException("El recurso ya está reservado en ese horario.");
+        }
+
         return reservaRepository.save(reserva);
     }
-
-    public void borrar(Long id) {
-        reservaRepository.deleteById(id);
     }
-}

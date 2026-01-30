@@ -69,3 +69,27 @@ Content-Type: application/json
 
 ### 2. Ver Reservas
 GET http://localhost:8080/api/reservas
+### ---------------- PRUEBAS DE ERROR (Día 7) ----------------
+
+### 1. Intentar romper la física (Fecha Fin antes de Inicio)
+POST http://localhost:8080/api/reservas
+Content-Type: application/json
+
+{
+  "fechaInicio": "2026-02-01T12:00:00",
+  "fechaFin": "2026-02-01T10:00:00",
+  "usuario": { "id": 1 },
+  "recurso": { "id": 1 }
+}
+
+### 2. Intentar solapar (Conflicto de horario)
+# La anterior era de 10:00 a 12:00. Esta empieza a las 11:00. ¡Debe fallar!
+POST http://localhost:8080/api/reservas
+Content-Type: application/json
+
+{
+  "fechaInicio": "2026-02-01T11:00:00",
+  "fechaFin": "2026-02-01T13:00:00",
+  "usuario": { "id": 1 },
+  "recurso": { "id": 1 }
+}
