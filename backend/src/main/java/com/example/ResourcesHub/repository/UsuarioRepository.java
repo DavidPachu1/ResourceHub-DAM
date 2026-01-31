@@ -3,6 +3,9 @@ package com.example.ResourcesHub.repository;
 import com.example.ResourcesHub.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
 /**
  * Repositorio para gestionar operaciones de acceso a datos de la entidad {@link Usuario}.
  *
@@ -22,4 +25,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     // .findById() -> Buscar por ID
     // .delete() -> Borrar
 
+    Optional<Usuario> findByEmail(String email);
 }

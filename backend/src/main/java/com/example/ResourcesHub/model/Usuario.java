@@ -1,53 +1,59 @@
 package com.example.ResourcesHub.model;
 
+import com.example.ResourcesHub.model.enums.Rol;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-/**
- * Representa un usuario del sistema almacenado en la base de datos.
- *
- * Contiene información básica de identificación como el nombre y el correo
- * electrónico, y se mapea a la tabla {@code usuarios} mediante JPA/Hibernate.
- * La gestión de getters, setters y constructores se realiza con Lombok.
- *
- * @author michael
- */
-@Entity
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
+
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
 @Table(name = "usuarios")
-public class Usuario {
-    /**
-     * Identificador único del usuario en la base de datos.
-     *
-     * Se genera automáticamente mediante la estrategia {@link GenerationType#IDENTITY}.
-     */
+public class Usuario implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    /**
-     * Nombre del usuario.
-     *
-     * Este campo es obligatorio.
-     */
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
     @Column(nullable = false)
     private String nombre;
-    /**
-     * Correo electrónico del usuario.
-     *
-     * Este campo es obligatorio y debe ser único en la base de datos.
-     */
-    @Column(nullable = false, unique = true)
-    private String email;
-    /**
-     * Correo password del usuario.
-     *
-     * Este campo es obligatorio y debe ser único en la base de datos.
-     */
+
     @Column(nullable = false)
-    private String password;
+    private String password; // Será encriptada
 
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
 
+    // --- MÉTODOS DE SECURITY  ---
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Convierte tu ROL (String) en una AUTORIDAD que entiende Spring
+        return List.of(new SimpleGrantedAuthority(rol.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email; // Para nosotros, el "usuario" es el email
+    }
+
+    @Override
+    public boolean isAccountNonExpired() { return true; }
+    @Override
+    public boolean isAccountNonLocked() { return true; }
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
+    @Override
+    public boolean isEnabled() { return true; }
 }

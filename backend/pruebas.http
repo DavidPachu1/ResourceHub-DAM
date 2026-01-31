@@ -93,3 +93,30 @@ Content-Type: application/json
   "usuario": { "id": 1 },
   "recurso": { "id": 1 }
 }
+
+
+### 1. REGISTRO (Crea usuario y devuelve Token)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "nombre": "Jefe de Seguridad",
+  "email": "admin@test.com",
+  "password": "123456"
+}
+
+### 2. INTENTO DE HACKER (Sin Token)
+GET http://localhost:8080/api/recursos
+
+### 3. ACCESO VIP (Con Token)
+GET http://localhost:8080/api/recursos
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkB0ZXN0LmNvbSIsImlhdCI6MTc2OTgxNzgyNiwiZXhwIjoxNzY5OTA0MjI2fQ.KG_VaG6Eu0BhXTmGQl-gXldrDR6Te1lYGLe7rq5aa9Y
+
+### 4. LOGIN (Para usuarios ya creados)
+POST http://localhost:8080/api/auth/authenticate
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "123456"
+}
