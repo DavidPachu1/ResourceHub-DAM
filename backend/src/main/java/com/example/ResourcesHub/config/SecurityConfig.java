@@ -50,11 +50,21 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Whitelist pública
-                        .anyRequest().authenticated()              // El resto cerrado
+                        // 1. Permitir acceso público a endpoints de autenticación
+                        .requestMatchers("/api/auth/**").permitAll()
+
+                        // 2. 👇 ¡NUEVO! Permitir acceso a la documentación (Swagger/OpenAPI)
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+
+                        // 3. El resto requiere autenticación
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No guardar estado en servidor
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
