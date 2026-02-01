@@ -4,18 +4,19 @@ import com.example.ResourcesHub.model.Usuario;
 import com.example.ResourcesHub.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * Controlador REST para la gestión de usuarios.
+ * Controlador REST para la administración de la entidad {@link Usuario}.
+ * Proporciona endpoints protegidos para realizar operaciones CRUD sobre los usuarios del sistema.
+ * La responsabilidad de esta clase es exponer una API segura para la gestión de usuarios,
+ * delegando toda la lógica de negocio al {@link UsuarioService}.
  *
- * Expone endpoints HTTP para realizar operaciones CRUD sobre la entidad {@link Usuario},
- * delegando la lógica de negocio en {@link UsuarioService}. Sigue las convenciones REST
- * utilizando códigos de estado adecuados para cada operación.
- *
- * @author michael
+ * @see UsuarioService
+ * @see Usuario
  */
 @RestController
 @RequestMapping("/api/usuarios")
@@ -24,37 +25,36 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     /**
-     * Crea una nueva instancia del controlador de usuarios.
+     * Inyecta la dependencia del servicio de usuarios.
      *
-     * @param usuarioService servicio que contiene la lógica de negocio para usuarios
+     * @param usuarioService El servicio que encapsula la lógica de negocio para los usuarios.
      */
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
     /**
-     * Obtiene todos los usuarios registrados.
+     * Recupera una lista completa de todos los usuarios registrados en el sistema.
      *
-     * Maneja solicitudes GET a {@code /api/usuarios}.
-     *
-     * @return una lista con todos los usuarios
+     * @apiNote La ejecución de este método requiere que el usuario autenticado posea la autoridad 'ADMIN'.
+     * @return Una lista con todos los objetos {@link Usuario}.
      */
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<Usuario> getAll() {
         return usuarioService.listarTodos();
     }
 
     /**
-     * Obtiene un usuario específico por su identificador.
+     * Busca y recupera un usuario específico a través de su identificador único.
      *
-     * Maneja solicitudes GET a {@code /api/usuarios/{id}}. Si el usuario existe,
-     * devuelve estado 200 OK con el usuario en el cuerpo; si no existe,
-     * devuelve estado 404 Not Found.
-     *
-     * @param id identificador del usuario a buscar
-     * @return una respuesta HTTP con el usuario o con estado 404 si no se encuentra
+     * @apiNote La ejecución de este método requiere que el usuario autenticado posea la autoridad 'ADMIN'.
+     * @param id El identificador del usuario a buscar.
+     * @return Un {@link ResponseEntity} con el {@link Usuario} encontrado y estado HTTP 200 (OK),
+     *         o un estado HTTP 404 (Not Found) si el usuario no existe.
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Usuario> getOne(@PathVariable Long id) {
         return usuarioService.buscarPorId(id)
                 .map(ResponseEntity::ok)
@@ -62,32 +62,31 @@ public class UsuarioController {
     }
 
     /**
-     * Crea un nuevo usuario.
+     * Crea un nuevo usuario en el sistema. Este endpoint está diseñado para ser utilizado
+     * por un administrador para crear cuentas manualmente.
      *
-     * Maneja solicitudes POST a {@code /api/usuarios}. Si la creación es exitosa,
-     * devuelve estado 201 Created con el usuario creado en el cuerpo.
-     *
-     * @param usuario datos del usuario a crear
-     * @return una respuesta HTTP con el usuario creado y estado 201 Created
+     * @apiNote La ejecución de este método requiere que el usuario autenticado posea la autoridad 'ADMIN'.
+     * @param usuario El objeto {@link Usuario} con los datos a persistir.
+     * @return Un {@link ResponseEntity} con el usuario recién creado y un estado HTTP 201 (Created).
      */
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Usuario> create(@RequestBody Usuario usuario) {
         Usuario nuevo = usuarioService.guardar(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
     }
 
     /**
-     * Actualiza los datos de un usuario existente.
+     * Actualiza los datos de un usuario existente, identificado por su ID.
      *
-     * Maneja solicitudes PUT a {@code /api/usuarios/{id}}. Si el usuario existe y se
-     * actualiza correctamente, devuelve estado 200 OK con el usuario actualizado;
-     * si no existe, devuelve estado 404 Not Found.
-     *
-     * @param id identificador del usuario a actualizar
-     * @param usuario objeto con los nuevos datos del usuario
-     * @return una respuesta HTTP con el usuario actualizado o estado 404 si no se encuentra
+     * @apiNote La ejecución de este método requiere que el usuario autenticado posea la autoridad 'ADMIN'.
+     * @param id El identificador del usuario a actualizar.
+     * @param usuario El objeto {@link Usuario} con la información actualizada.
+     * @return Un {@link ResponseEntity} con el usuario actualizado y estado HTTP 200 (OK),
+     *         o un estado HTTP 404 (Not Found) si el usuario no existe.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Usuario> update(@PathVariable Long id, @RequestBody Usuario usuario) {
         return usuarioService.actualizar(id, usuario)
                 .map(ResponseEntity::ok)
@@ -95,16 +94,15 @@ public class UsuarioController {
     }
 
     /**
-     * Elimina un usuario por su identificador.
+     * Elimina un usuario del sistema de forma permanente.
      *
-     * Maneja solicitudes DELETE a {@code /api/usuarios/{id}}. Si el usuario existe y se
-     * elimina correctamente, devuelve estado 204 No Content; si no existe, devuelve
-     * estado 404 Not Found.
-     *
-     * @param id identificador del usuario a eliminar
-     * @return una respuesta HTTP con estado 204 si se borró o 404 si no se encontró
+     * @apiNote La ejecución de este método requiere que el usuario autenticado posea la autoridad 'ADMIN'.
+     * @param id El identificador del usuario a eliminar.
+     * @return Un {@link ResponseEntity} con estado HTTP 204 (No Content) si la eliminación fue exitosa,
+     *         o HTTP 404 (Not Found) si el usuario no se encontró.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (usuarioService.borrar(id)) {
             return ResponseEntity.noContent().build();

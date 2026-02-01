@@ -7,23 +7,22 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 /**
- * Repositorio para gestionar operaciones de acceso a datos de la entidad {@link Usuario}.
+ * Repositorio de Spring Data JPA para la entidad {@link Usuario}.
+ * Esta interfaz es fundamental para la capa de persistencia, proveyendo una abstracción
+ * sobre la base de datos para las operaciones relacionadas con los usuarios.
  *
- * Proporciona métodos CRUD heredados de {@link JpaRepository}, incluyendo operaciones
- * para guardar, buscar, actualizar y eliminar usuarios en la base de datos.
- * Spring Data JPA genera automáticamente la implementación de estos métodos.
- *
- * @author michael
  * @see Usuario
- * @see JpaRepository
  */
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    // Al extender de JpaRepository, ya tienes automáticamente:
-    // .save() -> Guardar
-    // .findAll() -> Buscar todos
-    // .findById() -> Buscar por ID
-    // .delete() -> Borrar
 
+    /**
+     * Busca un usuario por su dirección de correo electrónico.
+     * Este método es crucial para el proceso de autenticación, donde el email actúa como nombre de usuario.
+     * La implementación es generada automáticamente por Spring Data JPA basado en la nomenclatura del método.
+     *
+     * @param email La dirección de correo electrónico a buscar.
+     * @return Un {@link Optional} que contiene al {@link Usuario} si se encuentra, o un Optional vacío si no existe.
+     */
     Optional<Usuario> findByEmail(String email);
 }
