@@ -1,122 +1,146 @@
-### ---------------- USUARIOS ----------------
-### 1. VER TODOS LOS USUARIOS (GET)
-GET http://localhost:8080/api/usuarios
+### ============================================================================
+### 🔐 SECCIÓN 1: AUTENTICACIÓN (LLAVES DE ACCESO)
+### ============================================================================
+### Aquí consigues los Tokens. ¡Haz esto primero!
 
-### 2. CREAR UN USUARIO NUEVO (POST)
-POST http://localhost:8080/api/usuarios
-Content-Type: application/json
-
-{
-  "nombre": "Piloto Nuevo",
-  "email": "piloto@test.com",
-  "password": "123"
-}
-
-### 3. ACTUALIZAR UN USUARIO (PUT)
-# Nota: Probamos con el ID 2 porque el 1 es el del DataSeeder
-PUT http://localhost:8080/api/usuarios/2
-Content-Type: application/json
-
-{
-  "nombre": "Piloto Actualizado",
-  "email": "piloto@test.com"
-}
-
-### 4. BORRAR UN USUARIO (DELETE)
-DELETE http://localhost:8080/api/usuarios/2
-
-### ---------------- RECURSOS ----------------
-
-### 1. Crear un Recurso (Proyector)
-POST http://localhost:8080/api/recursos
-Content-Type: application/json
-
-{
-  "nombre": "Proyector Epson Sala 1",
-  "descripcion": "Proyector 4K HDMI",
-  "descripcionAccesible": "Proyector color blanco situado en el techo",
-  "codigoQr": "PROY-001",
-  "tipo": "EQUIPO_INFORMATICO",
-  "estado": "DISPONIBLE"
-}
-
-### 2. Listar Recursos (Debería salir el proyector)
-GET http://localhost:8080/api/recursos
-
-### 3. Borrar el Recurso (Lógicamente)
-DELETE http://localhost:8080/api/recursos/1
-
-### 4. Listar de nuevo (¡Debería salir VACÍA la lista aunque el dato sigue en la BD!)
-GET http://localhost:8080/api/recursos
-
-### ---------------- RESERVAS ----------------
-
-### 1. Crear una Reserva
-# Asumimos: Usuario ID 1 (Tester) y Recurso ID 1 (El que creaste ayer, si lo borraste crea uno nuevo antes)
-POST http://localhost:8080/api/reservas
-Content-Type: application/json
-
-{
-  "fechaInicio": "2026-02-01T10:00:00",
-  "fechaFin": "2026-02-01T12:00:00",
-  "usuario": {
-    "id": 1
-  },
-  "recurso": {
-    "id": 1
-  }
-}
-
-### 2. Ver Reservas
-GET http://localhost:8080/api/reservas
-### ---------------- PRUEBAS DE ERROR (Día 7) ----------------
-
-### 1. Intentar romper la física (Fecha Fin antes de Inicio)
-POST http://localhost:8080/api/reservas
-Content-Type: application/json
-
-{
-  "fechaInicio": "2026-02-01T12:00:00",
-  "fechaFin": "2026-02-01T10:00:00",
-  "usuario": { "id": 1 },
-  "recurso": { "id": 1 }
-}
-
-### 2. Intentar solapar (Conflicto de horario)
-# La anterior era de 10:00 a 12:00. Esta empieza a las 11:00. ¡Debe fallar!
-POST http://localhost:8080/api/reservas
-Content-Type: application/json
-
-{
-  "fechaInicio": "2026-02-01T11:00:00",
-  "fechaFin": "2026-02-01T13:00:00",
-  "usuario": { "id": 1 },
-  "recurso": { "id": 1 }
-}
-
-
-### 1. REGISTRO (Crea usuario y devuelve Token)
-POST http://localhost:8080/api/auth/register
-Content-Type: application/json
-
-{
-  "nombre": "Jefe de Seguridad",
-  "email": "admin@test.com",
-  "password": "123456"
-}
-
-### 2. INTENTO DE HACKER (Sin Token)
-GET http://localhost:8080/api/recursos
-
-### 3. ACCESO VIP (Con Token)
-GET http://localhost:8080/api/recursos
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkB0ZXN0LmNvbSIsImlhdCI6MTc2OTgxNzgyNiwiZXhwIjoxNzY5OTA0MjI2fQ.KG_VaG6Eu0BhXTmGQl-gXldrDR6Te1lYGLe7rq5aa9Y
-
-### 4. LOGIN (Para usuarios ya creados)
+### 1.1 Login JEFE (ADMIN) - Copia este Token para la Sección 2
 POST http://localhost:8080/api/auth/authenticate
 Content-Type: application/json
 
 {
   "email": "admin@test.com",
-  "password": "123456"
+  "password": "admin123"
 }
+
+### 1.2 Login EMPLEADO (USER) - Copia este Token para la Sección 3
+POST http://localhost:8080/api/auth/authenticate
+Content-Type: application/json
+
+{
+  "email": "user@test.com",
+  "password": "user123"
+}
+
+### 1.3 Registro de Usuario Nuevo (Por si quieres crear otro)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "nombre": "Nuevo Piloto",
+  "email": "nuevo@test.com",
+  "password": "123"
+}
+
+### ============================================================================
+### 👮‍♂️ SECCIÓN 2: GESTIÓN DE RECURSOS (SOLO ADMIN)
+### ============================================================================
+### Requiere Token de ADMIN (Del paso 1.1)
+
+### 2.1 Crear Recurso (CORREGIDO: Incluye estado y activo para evitar error SQL)
+POST http://localhost:8080/api/recursos
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkB0ZXN0LmNvbSIsImlhdCI6MTc2OTk0MTE2NSwiZXhwIjoxNzcwMDI3NTY1fQ.f4nK9zfSlO6HI95rp2r9hri_mIWl8i6oMXEESlMIT8c
+
+{
+  "nombre": "Sala de Juntas Ejecutiva",
+  "tipo": "AULA",
+  "descripcion": "Sala con proyector 4K",
+  "codigoQr": "SALA-VIP-01",
+  "estado": "DISPONIBLE",
+  "activo": true
+}
+
+### 2.2 Borrar Recurso (Admin)
+DELETE http://localhost:8080/api/recursos/1
+Authorization: Bearer PEGA_AQUI_TOKEN_ADMIN
+
+
+### ============================================================================
+### 👤 SECCIÓN 3: ZONA DE USUARIOS Y RESERVAS
+### ============================================================================
+### Requiere Token de USER (Del paso 1.2) o ADMIN
+
+### 3.1 Listar Recursos (Público - Todos pueden ver)
+GET http://localhost:8080/api/recursos
+Authorization: Bearer PEGA_AQUI_TOKEN_CUALQUIERA
+
+### 3.2 Crear Reserva "Mágica" (Sin enviar ID de usuario)
+POST http://localhost:8080/api/reservas
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyQHRlc3QuY29tIiwiaWF0IjoxNzY5OTQxMjE1LCJleHAiOjE3NzAwMjc2MTV9.jVuoBWl-W9BoFCGX1kisunzdSZoXuOZji_NqLy-R98o
+
+{
+  "fechaInicio": "2026-02-20T10:00:00",
+  "fechaFin": "2026-02-20T12:00:00",
+  "recurso": { "id": 1 }
+}
+
+### 3.3 Ver Reservas
+GET http://localhost:8080/api/reservas
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyQHRlc3QuY29tIiwiaWF0IjoxNzY5OTQxMjE1LCJleHAiOjE3NzAwMjc2MTV9.jVuoBWl-W9BoFCGX1kisunzdSZoXuOZji_NqLy-R98o
+
+### ============================================================================
+### 🛡️ SECCIÓN 4: PRUEBAS DE SEGURIDAD (HACKING)
+### ============================================================================
+
+### 4.1 Intento de Usuario Normal creando Recurso (DEBE FALLAR - 403 Forbidden)
+POST http://localhost:8080/api/recursos
+Content-Type: application/json
+Authorization: Bearer PEGA_AQUI_TOKEN_USER
+
+{
+  "nombre": "Intento Hackeo",
+  "tipo": "AULA",
+  "estado": "DISPONIBLE",
+  "activo": true
+}
+
+### 4.2 Intento de Acceso sin Token (DEBE FALLAR - 403 Forbidden)
+GET http://localhost:8080/api/recursos
+
+### ============================================================================
+### ⚠️ SECCIÓN 5: ERRORES DE LÓGICA (VALIDACIONES)
+### ============================================================================
+
+### 5.1 Fechas Imposibles (Fin antes de Inicio)
+POST http://localhost:8080/api/reservas
+Content-Type: application/json
+Authorization: Bearer PEGA_AQUI_TOKEN_USER
+
+{
+  "fechaInicio": "2026-02-10T12:00:00",
+  "fechaFin": "2026-02-10T10:00:00",
+  "usuario": { "id": 2 },
+  "recurso": { "id": 1 }
+}
+
+### 5.2 Solapamiento (Conflicto de horario con la reserva 3.2)
+POST http://localhost:8080/api/reservas
+Content-Type: application/json
+Authorization: Bearer PEGA_AQUI_TOKEN_USER
+
+{
+  "fechaInicio": "2026-02-10T11:00:00",
+  "fechaFin": "2026-02-10T13:00:00",
+  "usuario": { "id": 2 },
+  "recurso": { "id": 1 }
+}
+
+### ============================================================================
+### 🛠️ SECCIÓN EXTRA: GESTIÓN DE USUARIOS (CRUD)
+### ============================================================================
+
+### 6.1 Ver usuarios
+GET http://localhost:8080/api/usuarios
+Authorization: Bearer PEGA_AQUI_TOKEN_ADMIN
+
+### 6.2 Actualizar usuario
+PUT http://localhost:8080/api/usuarios/2
+Content-Type: application/json
+Authorization: Bearer PEGA_AQUI_TOKEN_ADMIN
+
+{
+  "nombre": "Pepe Renombrado",
+  "email": "pepe@test.com"
+}
+

@@ -24,12 +24,13 @@ public class ReservaController {
     }
 
     @PostMapping
-    public ResponseEntity<?> crear(@RequestBody Reserva reserva) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(reservaService.guardar(reserva));
-        } catch (IllegalArgumentException e) {
-            // Si fallan las validaciones de fecha, devolvemos un error 400 (Bad Request)
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Reserva> crearReserva(@RequestBody Reserva reserva, java.security.Principal principal) {
+        // 'principal' es inyectado por Spring Security y contiene los datos del Token
+        String email = principal.getName();
+
+        // Pasamos el email al servicio
+        Reserva nuevaReserva = reservaService.crearReserva(reserva, email);
+
+        return ResponseEntity.ok(nuevaReserva);
     }
 }

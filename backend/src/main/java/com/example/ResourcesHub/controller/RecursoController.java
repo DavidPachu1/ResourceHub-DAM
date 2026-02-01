@@ -4,6 +4,7 @@ import com.example.ResourcesHub.model.Recurso;
 import com.example.ResourcesHub.service.RecursoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class RecursoController {
     }
 
     // 2. CREAR UNO NUEVO
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<Recurso> crear(@RequestBody Recurso recurso) {
         Recurso nuevo = recursoService.guardar(recurso);
@@ -52,6 +54,7 @@ public class RecursoController {
     }
 
     // 4. BORRAR (Lógico - Desactivar)
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> borrar(@PathVariable Long id) {
         if (recursoService.borrar(id)) {
