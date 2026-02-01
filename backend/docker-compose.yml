@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  # Servicio de Base de Datos
+  # docker compose up -d  para iniciar el docker con Mysql
+  mysqldb:
+    image: mysql:8.0
+    container_name: resourcehub-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: resourcehub_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
