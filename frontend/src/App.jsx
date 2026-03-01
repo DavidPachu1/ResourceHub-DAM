@@ -65,7 +65,7 @@ function App() {
           
           <Link to="/personal" className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-slate-800 transition-colors">
             <div className="flex items-center gap-3">
-              <Users size={20} /> Personal
+              <Users size={20} /> Quiénes somos
             </div>
             <ChevronRight size={16} />
           </Link>
