@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.Customizer;
 
 /**
  * Clase maestra de configuración de seguridad de Spring.
@@ -34,6 +35,7 @@ public class SecurityConfig {
      * <p>
      * Aquí se definen las reglas críticas:
      * <ul>
+     * <li>Se vincula con la configuración de CORS para permitir peticiones externas.</li>
      * <li>Se deshabilita CSRF (no necesario para APIs REST stateless).</li>
      * <li>Se permite acceso público (whitelist) a los endpoints de autenticación (/api/auth/**).</li>
      * <li>Se exige autenticación para CUALQUIER otra petición.</li>
@@ -48,6 +50,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // 1. 👇 ACTIVAMOS EL CORS (Vinculado a tu CorsConfig.java)
+                .cors(Customizer.withDefaults()) 
+
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         // 1. Permitir acceso público a endpoints de autenticación
