@@ -32,7 +32,13 @@ Sistema de gestión de recursos, reservas y mantenimiento para empresas (TFG DAM
 ## 📂 Estructura del Repositorio
 * `/backend`: Lógica de negocio y API REST (Spring Boot).
 * `/frontend`: Interfaz de usuario web (React).
+
+
 * `/docs`: Documentación del proyecto y esquemas de base de datos.
 
 ---
 *Desarrollado por el equipo de ResourceHub - 2026*
+## Authors
+
+David Fernandez, Marta Mercado, Michael J. Telleria  
+© 2026 All rights reserved
